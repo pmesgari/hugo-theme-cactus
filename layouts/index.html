@@ -57,7 +57,8 @@
       {{ $showAllPostsOnHomePage = .Site.Params.ShowAllPostsOnHomePage }}
     {{ end }}
     {{ $dataFormat := .Site.Params.dateFormat | default "2006-01-02" }}
-    {{ $mainPosts := (sort ( where site.RegularPages "Type" "in" site.Params.mainSections ) "Date" "desc") }}
+    {{ $basePosts := where site.RegularPages "Type" "in" site.Params.mainSections }}
+    {{ $mainPosts := sort (where (where $basePosts "Section" "!=" "til") "Section" "!=" "active-learning") "Date" "desc" }}
     {{ if $showAllPostsOnHomePage }}
     <ul class="post-list">
       {{ range (.Paginate $mainPosts).Pages }}
@@ -84,6 +85,30 @@
       {{ end }}
     </ul>
     {{ end }}
+  </section>
+
+  <section id="til">
+    <span class="h1"><a href="{{ "til" | absURL }}">TIL</a></span>
+    <ul class="post-list">
+      {{ range (first 5 (sort (where site.RegularPages "Section" "til") "Date" "desc")) }}
+        <li class="post-item">
+          <div class="meta"><time datetime="{{ time .Date }}" itemprop="datePublished">{{ .Date.Format $dataFormat }}</time></div>
+          <span><a href="{{ .Permalink }}">{{ if .Title }} {{- .Title -}} {{ else }} {{- print "Untitled" -}}{{ end }}</a></span>
+        </li>
+      {{ end }}
+    </ul>
+  </section>
+
+  <section id="active-learning">
+    <span class="h1"><a href="{{ "active-learning" | absURL }}">Active Learning</a></span>
+    <ul class="post-list">
+      {{ range (first 5 (sort (where site.RegularPages "Section" "active-learning") "Date" "desc")) }}
+        <li class="post-item">
+          <div class="meta"><time datetime="{{ time .Date }}" itemprop="datePublished">{{ .Date.Format $dataFormat }}</time></div>
+          <span><a href="{{ .Permalink }}">{{ if .Title }} {{- .Title -}} {{ else }} {{- print "Untitled" -}}{{ end }}</a></span>
+        </li>
+      {{ end }}
+    </ul>
   </section>
 
   {{ $showProjectsList := false }}
