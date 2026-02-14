@@ -1,7 +1,6 @@
 {{ define "main"}}
 <div id="archive">
   <ul class="post-list">
-
   {{ $pages := .Paginator.Pages }}
   {{ if .Site.Params.showAllPostsArchive }}
     {{ $pages = .Pages }}
